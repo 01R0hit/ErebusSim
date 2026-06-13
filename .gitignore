@@ -1,0 +1,8 @@
+# ROS 2 Python Ignored Files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.vscode/
+*~
+*.swp
