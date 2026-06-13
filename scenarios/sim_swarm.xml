@@ -281,7 +281,7 @@
     		<specs resolution_x="800" resolution_y="600" horizontal_fov="90.0"/>
 			<origin xyz="0.2 0.0 0.0" rpy="0.0 0.0 0.0"/>
 			<link name="hull"/>
-			<ros_publisher topic="/scanner_1/front_camera/image"/>
+			<ros_publisher topic="/scanner_2/front_camera/image"/>
 		</sensor>
 
         <sensor name="odom" type="odometry" rate="30.0">

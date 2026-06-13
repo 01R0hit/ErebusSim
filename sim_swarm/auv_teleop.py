@@ -89,7 +89,7 @@ class SwarmTeleop(Node):
 
                 # Differential Drive Math
                 thrust_port = surge + yaw
-                thrust_starboard = surge - yaw
+                thrust_starboard = yaw - surge
 
                 # Clamp values to valid limits
                 thrust_port = max(min(thrust_port, 1.0), -1.0)
