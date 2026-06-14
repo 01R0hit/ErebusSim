@@ -1,6 +1,6 @@
-# Stonefish Swarm Simulation Workspace
+# Swarm Simulation
 
-This repository contains a ROS 2 workspace for simulating a small swarm of underwater AUVs ("scanners") using the [Stonefish](https://github.com/patrykcieslak/stonefish) physics-based marine robotics simulator and its ROS 2 wrapper, [`stonefish_ros2`](https://github.com/patrykcieslak/stonefish_ros2).
+This repository contains a ROS 2 workspace for simulating a small swarm of underwater AUVs ("scanners") using the [Stonefish](https://github.com/patrykcieslak/stonefish) physics-based marine robotics simulator and its ROS 2 wrapper, [`stonefish_ros2`](https://github.com/patrykcieslak/stonefish_ros2). The swarm's underwater networking and inter-vehicle communication is handled by [UnetStack](https://unetstack.net/), bridged into ROS 2 via a dedicated `unet_api` node.
 
 The `sim_swarm` package defines a Stonefish scenario containing two torpedo-shaped AUVs (`scanner_1` and `scanner_2`), each equipped with twin thrusters, a variable buoyancy system (VBS), side-scan sonars, and odometry. A keyboard teleop node is included to drive either vehicle.
 
@@ -32,6 +32,36 @@ This workspace targets **ROS 2 Jazzy**. Make sure ROS 2 Jazzy is installed and s
 
 ```bash
 source /opt/ros/jazzy/setup.bash
+```
+
+### 1.3 UnetStack (Community Edition)
+
+This workspace uses [UnetStack](https://unetstack.net/) to run the underwater networking/agent stack alongside the simulation.
+
+**Requirements** (per the [UnetStack downloads page](https://unetstack.net/)):
+- Java 8 runtime environment
+- PortAudio (on Linux/macOS)
+- A modern browser (Chrome 61+ / Firefox 60+ / Safari 10.1+) for the web-based shell/console
+
+Install the prerequisites on Ubuntu:
+
+```bash
+sudo apt update
+sudo apt install -y openjdk-8-jre portaudio19-dev
+```
+
+Then download the **UnetStack 3 Community edition** for Linux from the [UnetStack downloads page](https://unetstack.net/) and extract it to a directory of your choice, e.g.:
+
+```bash
+cd ~
+tar -xvzf unet-*-community-linux.tar.gz
+mv unet-* unetstack
+```
+
+Finally, install the `unetpy` Python package (used by the `unet_api` node to talk to UnetStack):
+
+```bash
+python3 -m pip install unetpy
 ```
 
 ---
@@ -99,9 +129,13 @@ echo "source ~/stonefish_ws/install/setup.bash" >> ~/.bashrc
 
 ## 6. Running the Simulation
 
-Launch the Stonefish simulator with the swarm scenario:
+Running the full setup requires **three terminals**: one for the Stonefish simulation, one for UnetStack, and one for the `unet_api` bridge node. The RViz visualization is already included in the launch file, so no separate RViz step is needed.
+
+**Terminal 1 — Stonefish simulation**
 
 ```bash
+cd ~/stonefish_ws
+source install/setup.bash
 ros2 launch sim_swarm sim_swarm.launch.py
 ```
 
@@ -113,13 +147,26 @@ This starts the `stonefish_simulator` node (from `stonefish_ros2`) with:
 
 You should see a 3D window open showing a seafloor plane and two cylindrical AUVs, `scanner_1` and `scanner_2`, hovering near the origin.
 
-### Visualizing in RViz (optional)
+**Terminal 2 — UnetStack**
 
-A pre-configured RViz layout is provided:
+> ⚠️ **Check your paths first**: the commands below assume UnetStack was extracted to `~/unetstack` and that this package was cloned to `~/stonefish_ws/src/sim_swarm`. If you put either of these somewhere else, update the paths accordingly before running.
 
 ```bash
-rviz2 -d src/sim_swarm/rviz/sim_swarm.rviz
+cd ~/unetstack
+bin/unet ~/stonefish_ws/src/sim_swarm/config/sim_swarm.groovy
 ```
+
+This starts the UnetStack node(s) defined in `sim_swarm.groovy` and prints the `tcp://` / `http://` addresses for each node's shell/console.
+
+**Terminal 3 — `unet_api` node**
+
+```bash
+cd ~/stonefish_ws
+source install/setup.bash
+ros2 run sim_swarm unet_api
+```
+
+This node bridges ROS 2 and UnetStack using `unetpy`, so make sure UnetStack (Terminal 2) is already running before starting it.
 
 ---
 
@@ -151,6 +198,8 @@ The node starts with `scanner_1` as the active vehicle. Pressing `TAB` toggles c
 stonefish_ws/
 └── src/
     ├── sim_swarm/
+    │   ├── config/
+    │   │   └── sim_swarm.groovy
     │   ├── data/
     │   │   └── meshes/
     │   │       ├── dummy_prop.obj
@@ -163,6 +212,7 @@ stonefish_ws/
     │   ├── launch/
     │   │   └── sim_swarm.launch.py
     │   ├── package.xml
+    │   ├── README.md
     │   ├── resource/
     │   │   └── sim_swarm
     │   ├── rviz/
@@ -174,9 +224,7 @@ stonefish_ws/
     │   ├── sim_swarm/
     │   │   ├── auv_teleop.py
     │   │   ├── __init__.py
-    │   │   └── __pycache__/
-    │   │       ├── auv_teleop.cpython-312.pyc
-    │   │       └── __init__.cpython-312.pyc
+    │   │   └── unet_api.py
     │   └── test/
     │       ├── test_copyright.py
     │       ├── test_flake8.py
