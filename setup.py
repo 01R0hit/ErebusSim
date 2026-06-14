@@ -27,6 +27,7 @@ setup(
     entry_points={
         'console_scripts': [
             'auv_teleop = sim_swarm.auv_teleop:main',
+            'unet_api = sim_swarm.unet_api:main'
         ],
     },
 )
