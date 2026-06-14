@@ -8,24 +8,26 @@ def generate_launch_description():
     pkg_stonefish_ros2 = get_package_share_directory('stonefish_ros2')
 
     data_path = pkg_stonefish_ros2
-    
     scenario_path = os.path.join(pkg_sim_swarm, 'scenarios', 'sim_swarm.xml')
+    rviz_config_path = os.path.join(pkg_sim_swarm, 'rviz', 'sim_swarm.rviz')
 
     stonefish_node = Node(
         package='stonefish_ros2',
         executable='stonefish_simulator',
         name='stonefish_simulator',
         output='screen',
-        arguments=[
-            data_path,
-            scenario_path,
-            '50.0',
-            '800',
-            '600',
-            'low'
-        ]
+        arguments=[data_path, scenario_path, '50.0', '800', '600', 'low']
+    )
+
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        arguments=['-d', rviz_config_path],
+        output='screen'
     )
 
     return LaunchDescription([
-        stonefish_node
+        stonefish_node,
+        rviz_node
     ])

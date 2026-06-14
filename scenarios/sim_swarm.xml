@@ -8,7 +8,7 @@
     <environment>
         <ned latitude="18.5204" longitude="73.8567"/>
         <ocean>
-            <water density="1028.0" jerlov="3"/>
+            <water density="1028.0" jerlov="0.20"/>
             <waves height="0.0"/>
         </ocean>
         <atmosphere>
@@ -300,7 +300,7 @@
         </sensor>
 
         <ros_subscriber topic="/scanner_2/thruster_setpoints"/>
-        <world_transform xyz="0.0 3.0 5.0" rpy="0.0 1.5708 0.0"/>
+        <world_transform xyz="0.0 3.0 10.0" rpy="0.0 1.5708 0.0"/>
         
     </robot>
 </scenario>
