@@ -4,12 +4,12 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    pkg_sim_swarm = get_package_share_directory('sim_swarm')
+    pkg_sim_swarm = get_package_share_directory('ErebusSim')
     pkg_stonefish_ros2 = get_package_share_directory('stonefish_ros2')
 
     data_path = pkg_stonefish_ros2
-    scenario_path = os.path.join(pkg_sim_swarm, 'scenarios', 'sim_swarm.xml')
-    rviz_config_path = os.path.join(pkg_sim_swarm, 'rviz', 'sim_swarm.rviz')
+    scenario_path = os.path.join(pkg_sim_swarm, 'scenarios', 'ErebusSim.xml')
+    rviz_config_path = os.path.join(pkg_sim_swarm, 'rviz', 'ErebusSim.rviz')
 
     stonefish_node = Node(
         package='stonefish_ros2',

@@ -2,7 +2,7 @@ import os
 from glob import glob
 from setuptools import find_packages, setup
 
-package_name = 'sim_swarm'
+package_name = 'ErebusSim'
 
 setup(
     name=package_name,
@@ -27,8 +27,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'auv_teleop = sim_swarm.auv_teleop:main',
-            'unet_api = sim_swarm.unet_api:main'
+            'auv_teleop = ErebusSim.auv_teleop:main',
+            'unet_api = ErebusSim.unet_api:main'
         ],
     },
 )

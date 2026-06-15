@@ -86,7 +86,7 @@
         <actuator name="thruster_port" type="thruster">
             <specs max_setpoint="1.0" inverted_setpoint="false" normalized_setpoint="true"/>
             <propeller diameter="0.1" right="true">
-                <mesh filename="$(find sim_swarm)/data/meshes/dummy_prop.obj" scale="1.0"/>
+                <mesh filename="$(find ErebusSim)/data/meshes/dummy_prop.obj" scale="1.0"/>
                 <material name="Neutral"/>
                 <look name="hull_color"/>
             </propeller>
@@ -106,7 +106,7 @@
         <actuator name="thruster_starboard" type="thruster">
             <specs max_setpoint="1.0" inverted_setpoint="false" normalized_setpoint="true"/>
             <propeller diameter="0.1" right="false">
-                <mesh filename="$(find sim_swarm)/data/meshes/dummy_prop.obj" scale="1.0"/>
+                <mesh filename="$(find ErebusSim)/data/meshes/dummy_prop.obj" scale="1.0"/>
                 <material name="Neutral"/>
                 <look name="hull_color"/>
             </propeller>
@@ -125,9 +125,9 @@
 
         <actuator name="vbs_system" type="vbs">
             <volume initial="0.5">
-                <mesh filename="$(find sim_swarm)/data/meshes/empty.obj"/>
-                <mesh filename="$(find sim_swarm)/data/meshes/half.obj"/>
-                <mesh filename="$(find sim_swarm)/data/meshes/full.obj"/>
+                <mesh filename="$(find ErebusSim)/data/meshes/empty.obj"/>
+                <mesh filename="$(find ErebusSim)/data/meshes/half.obj"/>
+                <mesh filename="$(find ErebusSim)/data/meshes/full.obj"/>
             </volume>
             <origin xyz="0.0 0.6 0.0" rpy="0.0 0.0 0.0"/>
             <link name="hull"/>
@@ -208,7 +208,7 @@
         <actuator name="thruster_port" type="thruster">
             <specs max_setpoint="1.0" inverted_setpoint="false" normalized_setpoint="true"/>
             <propeller diameter="0.1" right="true">
-                <mesh filename="$(find sim_swarm)/data/meshes/dummy_prop.obj" scale="1.0"/>
+                <mesh filename="$(find ErebusSim)/data/meshes/dummy_prop.obj" scale="1.0"/>
                 <material name="Neutral"/>
                 <look name="hull_color"/>
             </propeller>
@@ -227,7 +227,7 @@
         <actuator name="thruster_starboard" type="thruster">
             <specs max_setpoint="1.0" inverted_setpoint="false" normalized_setpoint="true"/>
             <propeller diameter="0.1" right="false">
-                <mesh filename="$(find sim_swarm)/data/meshes/dummy_prop.obj" scale="1.0"/>
+                <mesh filename="$(find ErebusSim)/data/meshes/dummy_prop.obj" scale="1.0"/>
                 <material name="Neutral"/>
                 <look name="hull_color"/>
             </propeller>
@@ -246,9 +246,9 @@
 
         <actuator name="vbs_system" type="vbs">
             <volume initial="0.5">
-                <mesh filename="$(find sim_swarm)/data/meshes/empty.obj"/>
-                <mesh filename="$(find sim_swarm)/data/meshes/half.obj"/>
-                <mesh filename="$(find sim_swarm)/data/meshes/full.obj"/>
+                <mesh filename="$(find ErebusSim)/data/meshes/empty.obj"/>
+                <mesh filename="$(find ErebusSim)/data/meshes/half.obj"/>
+                <mesh filename="$(find ErebusSim)/data/meshes/full.obj"/>
             </volume>
             <origin xyz="0.0 0.6 0.0" rpy="0.0 0.0 0.0"/>
             <link name="hull"/>
