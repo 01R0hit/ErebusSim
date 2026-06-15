@@ -16,6 +16,7 @@ setup(
         (os.path.join('share', package_name, 'scenarios'), glob('scenarios/*.xml')),
         (os.path.join('share', package_name, 'rviz'), glob('rviz/*.rviz')),
         (os.path.join('share', package_name, 'data/meshes'), glob('data/meshes/*')),
+        (os.path.join('share', package_name, 'config'), glob('config/*.groovy')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
