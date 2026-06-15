@@ -32,12 +32,27 @@
         <look name="wall_color" gray="0.3" roughness="0.9"/>
         <look name="gray" gray="0.5" roughness="0.2"/>
         <look name="red" rgb="1.0 0.0 0.0" roughness="0.2"/>
+        <look name="black" rgb="0.0 0.0 0.0" roughness="0.2"/>
     </looks>
 
     <static name="Seafloor" type="plane">
         <material name="Rock"/>
         <look name="gray"/>
         <world_transform xyz="0.0 0.0 200.0" rpy="0.0 0.0 0.0"/>
+    </static>
+
+    <static name="Target_Mine" type="model">
+        <physical>
+            <mesh filename="$(find ErebusSim)/data/meshes/mine.obj" scale="1.0" convex="true"/>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </physical>
+        <visual>
+            <mesh filename="$(find ErebusSim)/data/meshes/mine.obj" scale="1.0"/>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </visual>
+        <material name="Neutral"/>
+        <look name="black"/>
+        <world_transform xyz="0.0 0.0 5.0" rpy="0.0 0.0 0.0"/>
     </static>
 
     <robot name="Surface_Base" fixed="true" self_collisions="false">
@@ -143,8 +158,8 @@
 		</light>
 
         <sensor name="sss_port" rate="5.0" type="sss">
-            <specs bins="500" lines="400" horizontal_beam_width="2.0" vertical_beam_width="50.0" vertical_tilt="60.0"/>
-            <settings range_min="1.0" range_max="40.0" gain="1.2"/>
+            <specs bins="1000" lines="400" horizontal_beam_width="1.0" vertical_beam_width="50.0" vertical_tilt="60.0"/>
+            <settings range_min="1.0" range_max="20.0" gain="1.2"/>
             <noise multiplicative="0.02" additive="0.04"/>
             <display colormap="hot"/>
             <origin xyz="0.0 -0.16 0.0" rpy="0.0 0.0 -1.5708"/>
@@ -152,15 +167,15 @@
             <ros_publisher topic="/scanner_1/sss_port"/>
         </sensor>
 
-        <sensor name="sss_starboard" rate="5.0" type="sss">
-            <specs bins="500" lines="400" horizontal_beam_width="2.0" vertical_beam_width="50.0" vertical_tilt="60.0"/>
-            <settings range_min="1.0" range_max="40.0" gain="1.2"/>
+        <!-- <sensor name="sss_starboard" rate="5.0" type="sss">
+            <specs bins="1000" lines="400" horizontal_beam_width="1.0" vertical_beam_width="50.0" vertical_tilt="60.0"/>
+            <settings range_min="1.0" range_max="20.0" gain="1.2"/>
             <noise multiplicative="0.02" additive="0.04"/>
             <display colormap="hot"/>
             <origin xyz="0.0 0.16 0.0" rpy="0.0 0.0 1.5708"/>
             <link name="hull"/>
             <ros_publisher topic="/scanner_1/sss_starboard"/>
-        </sensor>
+        </sensor> -->
 
         <sensor name="front_camera" type="camera" rate="30.0">
     		<specs resolution_x="800" resolution_y="600" horizontal_fov="90.0"/>
@@ -265,8 +280,8 @@
 
 
         <sensor name="sss_port" rate="5.0" type="sss">
-            <specs bins="500" lines="400" horizontal_beam_width="2.0" vertical_beam_width="50.0" vertical_tilt="60.0"/>
-            <settings range_min="1.0" range_max="40.0" gain="1.2"/>
+            <specs bins="1000" lines="400" horizontal_beam_width="1.0" vertical_beam_width="50.0" vertical_tilt="60.0"/>
+            <settings range_min="1.0" range_max="20.0" gain="1.2"/>
             <noise multiplicative="0.02" additive="0.04"/>
             <display colormap="hot"/>
             <origin xyz="0.0 -0.16 0.0" rpy="0.0 0.0 -1.5708"/>
@@ -275,8 +290,8 @@
         </sensor>
 
         <sensor name="sss_starboard" rate="5.0" type="sss">
-            <specs bins="500" lines="400" horizontal_beam_width="2.0" vertical_beam_width="50.0" vertical_tilt="60.0"/>
-            <settings range_min="1.0" range_max="40.0" gain="1.2"/>
+            <specs bins="1000" lines="400" horizontal_beam_width="1.0" vertical_beam_width="50.0" vertical_tilt="60.0"/>
+            <settings range_min="1.0" range_max="20.0" gain="1.2"/>
             <noise multiplicative="0.02" additive="0.04"/>
             <display colormap="hot"/>
             <origin xyz="0.0 0.16 0.0" rpy="0.0 0.0 1.5708"/>
