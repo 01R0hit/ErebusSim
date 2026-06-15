@@ -144,7 +144,7 @@
                 <mesh filename="$(find ErebusSim)/data/meshes/half.obj"/>
                 <mesh filename="$(find ErebusSim)/data/meshes/full.obj"/>
             </volume>
-            <origin xyz="0.0 0.6 0.0" rpy="0.0 0.0 0.0"/>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
             <link name="hull"/>
             <ros_publisher topic="/scanner_1/vbs_system/state"/>
             <ros_subscriber topic="/scanner_1/vbs_system/command"/>
@@ -167,7 +167,7 @@
             <ros_publisher topic="/scanner_1/sss_port"/>
         </sensor>
 
-        <!-- <sensor name="sss_starboard" rate="5.0" type="sss">
+         <sensor name="sss_starboard" rate="5.0" type="sss">
             <specs bins="1000" lines="400" horizontal_beam_width="1.0" vertical_beam_width="50.0" vertical_tilt="60.0"/>
             <settings range_min="1.0" range_max="20.0" gain="1.2"/>
             <noise multiplicative="0.02" additive="0.04"/>
@@ -175,7 +175,7 @@
             <origin xyz="0.0 0.16 0.0" rpy="0.0 0.0 1.5708"/>
             <link name="hull"/>
             <ros_publisher topic="/scanner_1/sss_starboard"/>
-        </sensor> -->
+        </sensor>
 
         <sensor name="front_camera" type="camera" rate="30.0">
     		<specs resolution_x="800" resolution_y="600" horizontal_fov="90.0"/>
@@ -265,7 +265,7 @@
                 <mesh filename="$(find ErebusSim)/data/meshes/half.obj"/>
                 <mesh filename="$(find ErebusSim)/data/meshes/full.obj"/>
             </volume>
-            <origin xyz="0.0 0.6 0.0" rpy="0.0 0.0 0.0"/>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
             <link name="hull"/>
             <ros_publisher topic="/scanner_2/vbs_system/state"/>
             <ros_subscriber topic="/scanner_2/vbs_system/command"/>

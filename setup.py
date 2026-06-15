@@ -29,6 +29,7 @@ setup(
         'console_scripts': [
             'auv_teleop = ErebusSim.auv_teleop:main',
             'unet_api = ErebusSim.unet_api:main'
+            'sonar_cropper = ErebusSim.sonar_cropper:main',
         ],
     },
 )
