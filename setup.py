@@ -23,13 +23,13 @@ setup(
     maintainer='Your Name',
     maintainer_email='your.email@example.com',
     description='Subsea swarm simulation and routing architecture',
-    license='TODO: License declaration',
+    license='TODO: License declaration',    
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             'auv_teleop = ErebusSim.auv_teleop:main',
-            'unet_api = ErebusSim.unet_api:main'
-            'sonar_cropper = ErebusSim.sonar_cropper:main',
+            'unet_api = ErebusSim.unet_api:main',
+            'vbs_pid_controller = ErebusSim.vbs_pid_controller:main',
         ],
     },
 )

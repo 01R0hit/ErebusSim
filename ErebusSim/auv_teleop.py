@@ -28,7 +28,7 @@ class SwarmTeleop(Node):
         # INITIALIZATION FIX: Start them in formation
         self.target_depths = {
             'scanner_1': 0.0,
-            'scanner_2': 10.0
+            'scanner_2': 0.0
         }
 
         self.pubs = {
@@ -81,25 +81,12 @@ class SwarmTeleop(Node):
                             val = float(self.input_buffer[:-1]) if len(self.input_buffer) > 1 else 1.0
                             if self.input_buffer.endswith('i'):
                                 self.target_depths[self.active_auv] = max(0.0, self.target_depths[self.active_auv] - val)
+                                print(f"\r\n[ {self.active_auv.upper()} ] Target Depth set to: {self.target_depths[self.active_auv]}m\r\n")
                             elif self.input_buffer.endswith('k'):
                                 self.target_depths[self.active_auv] += val
+                                print(f"\r\n[ {self.active_auv.upper()} ] Target Depth set to: {self.target_depths[self.active_auv]}m\r\n")
                             else:
                                 print(f"\r\n[!] Invalid format. End with 'i' (up) or 'k' (down).\r\n")
-                                self.input_buffer = ""
-                                continue
-
-                            # --- THE SWARM FORMATION MATH ---
-                            if self.active_auv == 'scanner_1':
-                                # Scanner 2 is dragged exactly 10m below Scanner 1
-                                self.target_depths['scanner_2'] = self.target_depths['scanner_1'] + 10.0
-                            else:
-                                # Scanner 1 is pushed 10m above Scanner 2, but clamped at the surface (0.0)
-                                self.target_depths['scanner_1'] = max(0.0, self.target_depths['scanner_2'] - 10.0)
-                                # Re-sync Scanner 2 in case Scanner 1 hit the surface boundary
-                                self.target_depths['scanner_2'] = self.target_depths['scanner_1'] + 10.0
-                            
-                            print(f"\r\n[ SWARM FORMATION ] S1 Target: {self.target_depths['scanner_1']}m | S2 Target: {self.target_depths['scanner_2']}m\r\n")
-
                         except ValueError:
                             print(f"\r\n[!] Error parsing depth command.\r\n")
                         
@@ -113,20 +100,23 @@ class SwarmTeleop(Node):
                 elif key == 'd': yaw = 1.0
                 elif key == '\x03': break  # Ctrl+C
 
+                # Calculate Active Thrusters
                 thrust_port = max(min(surge + yaw, 1.0), -1.0)
                 thrust_starboard = max(min(yaw - surge, 1.0), -1.0)
 
-                # --- SWARM BROADCAST ---
+                # --- SWARM BROADCAST FIX ---
                 for auv in ['scanner_1', 'scanner_2']:
                     m_port, m_stbd, m_depth = Float64(), Float64(), Float64()
                     
-                    # Both AUVs constantly receive their rigid formation targets
+                    # BOTH AUVs always receive their saved target depth
                     m_depth.data = float(self.target_depths[auv])
                     
                     if auv == self.active_auv:
+                        # Active AUV gets your keyboard input
                         m_port.data = float(thrust_port)
                         m_stbd.data = float(thrust_starboard)
                     else:
+                        # Inactive AUV gets STOP propeller commands!
                         m_port.data = 0.0
                         m_stbd.data = 0.0
 

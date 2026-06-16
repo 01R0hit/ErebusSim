@@ -16,7 +16,7 @@ class VBSController(Node):
 
         # PD Control Gains
         self.Kp = 0.8  # Pushes AUV toward target
-        self.Kd = 0.5  # Applies the brakes as it gets close
+        self.Kd = 0.8  # Applies the brakes as it gets close
         self.deadband = 0.15 
 
         self.vbs_pubs = {
@@ -46,7 +46,7 @@ class VBSController(Node):
             state['prev_error'] = error
             
             msg = Float64()
-            msg.data = 0.0 
+            msg.data = 0.25 
             
             if abs(error) > self.deadband:
                 # Proportional + Derivative Math

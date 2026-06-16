@@ -27,7 +27,15 @@ def generate_launch_description():
         output='screen'
     )
 
+    vbs_pid_controller_node = Node(
+        package='ErebusSim',
+        executable='vbs_pid_controller',
+        name='vbs_pid_controller',
+        output='screen'
+    )
+
     return LaunchDescription([
         stonefish_node,
-        rviz_node
+        rviz_node,
+        vbs_pid_controller_node
     ])
