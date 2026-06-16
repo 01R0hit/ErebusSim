@@ -10,14 +10,14 @@ class VBSController(Node):
         
         # Added 'prev_error' to track velocity for the Derivative term
         self.auvs = {
-            'scanner_1': {'target': 0.0, 'current': 0.0, 'prev_error': 0.0},
-            'scanner_2': {'target': 0.0, 'current': 0.0, 'prev_error': 0.0}
+            'scanner_1': {'target': 5.0, 'current': 0.0, 'prev_error': 0.0},
+            'scanner_2': {'target': 10.0, 'current': 0.0, 'prev_error': 0.0}
         }
 
         # PD Control Gains
         self.Kp = 0.8  # Pushes AUV toward target
-        self.Kd = 0.8  # Applies the brakes as it gets close
-        self.deadband = 0.15 
+        self.Kd = 0.7  # Applies the brakes as it gets close
+        self.deadband = 0.10
 
         self.vbs_pubs = {
             'scanner_1': self.create_publisher(Float64, '/scanner_1/vbs_system/command', 10),
@@ -46,7 +46,7 @@ class VBSController(Node):
             state['prev_error'] = error
             
             msg = Float64()
-            msg.data = 0.25 
+            msg.data = 0.005
             
             if abs(error) > self.deadband:
                 # Proportional + Derivative Math

@@ -181,7 +181,7 @@
         </actuator>
 
         <actuator name="vbs_system" type="vbs">
-            <volume initial="0.5">
+            <volume initial="0.005">
                 <mesh filename="$(find ErebusSim)/data/meshes/empty.obj"/>
                 <mesh filename="$(find ErebusSim)/data/meshes/half.obj"/>
                 <mesh filename="$(find ErebusSim)/data/meshes/full.obj"/>
@@ -302,7 +302,7 @@
         </actuator>
 
         <actuator name="vbs_system" type="vbs">
-            <volume initial="0.5">
+            <volume initial="0.005">
                 <mesh filename="$(find ErebusSim)/data/meshes/empty.obj"/>
                 <mesh filename="$(find ErebusSim)/data/meshes/half.obj"/>
                 <mesh filename="$(find ErebusSim)/data/meshes/full.obj"/>

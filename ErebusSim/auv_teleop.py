@@ -27,8 +27,8 @@ class SwarmTeleop(Node):
 
         # INITIALIZATION FIX: Start them in formation
         self.target_depths = {
-            'scanner_1': 0.0,
-            'scanner_2': 0.0
+            'scanner_1': 5.0,
+            'scanner_2': 10.0
         }
 
         self.pubs = {
