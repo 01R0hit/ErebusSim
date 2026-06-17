@@ -2,7 +2,7 @@
 
 This repository contains a ROS 2 workspace for simulating a small swarm of underwater AUVs ("scanners") using the [Stonefish](https://github.com/patrykcieslak/stonefish) physics-based marine robotics simulator and its ROS 2 wrapper, [`stonefish_ros2`](https://github.com/patrykcieslak/stonefish_ros2). The swarm's underwater networking and inter-vehicle communication is handled by [UnetStack](https://unetstack.net/), bridged into ROS 2 via a dedicated `unet_api` node.
 
-The `sim_swarm` package defines a Stonefish scenario containing two torpedo-shaped AUVs (`scanner_1` and `scanner_2`), each equipped with twin thrusters, a variable buoyancy system (VBS), side-scan sonars, and odometry. A keyboard teleop node is included to drive either vehicle.
+The `ErebusSim` package defines a Stonefish scenario containing two torpedo-shaped AUVs (`scanner_1` and `scanner_2`), each equipped with twin thrusters, a variable buoyancy system (VBS), side-scan sonars, and odometry. A keyboard teleop node is included to drive either vehicle, and a PID controller node manages the VBS.
 
 ---
 
@@ -50,13 +50,21 @@ sudo apt update
 sudo apt install -y openjdk-8-jre portaudio19-dev
 ```
 
-Then download the **UnetStack 3 Community edition** for Linux from the [UnetStack downloads page](https://unetstack.net/) and extract it to a directory of your choice, e.g.:
+Download the **UnetStack 3 Community edition** for Linux from the [UnetStack downloads page](https://unetstack.net/) — it will land in `~/Downloads` as something like `unet-community-3.4.4.tgz`. Extract it directly into your home directory:
 
 ```bash
-cd ~
-tar -xvzf unet-*-community-linux.tar.gz
-mv unet-* unetstack
+cd ~/Downloads
+tar -xvzf unet-community-*.tgz -C ~/
 ```
+
+This produces `~/unet-3.4.4/` (the version number in the folder name will match whatever release you downloaded). Set the `UNET_HOME` environment variable to point at it and save it to your shell startup so the launch file can find it automatically:
+
+```bash
+echo 'export UNET_HOME=~/unet-3.4.4' >> ~/.bashrc
+source ~/.bashrc
+```
+
+> If `UNET_HOME` is not set, `ErebusSim.launch.py` falls back to this same default path. If you extract a different version, update the `UNET_HOME` export (and the fallback in the launch file, if you want it to stay in sync) to match the new folder name.
 
 Finally, install the `unetpy` Python package (used by the `unet_api` node to talk to UnetStack):
 
@@ -75,7 +83,7 @@ mkdir -p ~/stonefish_ws/src
 cd ~/stonefish_ws/src
 ```
 
-All packages (`stonefish_ros2` and `sim_swarm`) live inside `~/stonefish_ws/src/`.
+All packages (`stonefish_ros2` and `ErebusSim`) live inside `~/stonefish_ws/src/`.
 
 ---
 
@@ -88,20 +96,20 @@ cd ~/stonefish_ws/src
 git clone https://github.com/patrykcieslak/stonefish_ros2.git
 ```
 
-It will be built together with `sim_swarm` in the build step below. Stonefish itself (step 1.1) must already be installed system-wide for `stonefish_ros2` to compile.
+It will be built together with `ErebusSim` in the build step below. Stonefish itself (step 1.1) must already be installed system-wide for `stonefish_ros2` to compile.
 
 ---
 
-## 4. Add the `sim_swarm` Package
+## 4. Add the `ErebusSim` Package
 
-Clone (or copy) this `sim_swarm` package into the same `src/` directory:
+Clone (or copy) this `ErebusSim` package into the same `src/` directory:
 
 ```bash
 cd ~/stonefish_ws/src
-git clone https://github.com/01R0hit/AUV.git sim_swarm
+git clone https://github.com/01R0hit/AUV.git ErebusSim
 ```
 
-After this step, `~/stonefish_ws/src/` should contain two packages side by side: `stonefish_ros2/` and `sim_swarm/`.
+After this step, `~/stonefish_ws/src/` should contain two packages side by side: `stonefish_ros2/` and `ErebusSim/`.
 
 ---
 
@@ -117,7 +125,7 @@ colcon build --symlink-install
 source install/setup.bash
 ```
 
-> `--symlink-install` is recommended for `sim_swarm` since it's a Python package — edits to `auv_teleop.py` will take effect without rebuilding.
+> `--symlink-install` is recommended for `ErebusSim` since it's a Python package — edits to `auv_teleop.py`, `unet_api.py`, etc. will take effect without rebuilding.
 
 Add the workspace overlay to your shell startup so it's sourced automatically in new terminals:
 
@@ -129,44 +137,33 @@ echo "source ~/stonefish_ws/install/setup.bash" >> ~/.bashrc
 
 ## 6. Running the Simulation
 
-Running the full setup requires **three terminals**: one for the Stonefish simulation, one for UnetStack, and one for the `unet_api` bridge node. The RViz visualization is already included in the launch file, so no separate RViz step is needed.
+The launch file starts Stonefish, RViz, the VBS PID controller, and UnetStack together, so a single terminal is enough to bring up the simulation side:
 
-**Terminal 1 — Stonefish simulation**
-
-```bash
-cd ~/stonefish_ws
-source install/setup.bash
-ros2 launch sim_swarm sim_swarm.launch.py
-```
-
-This starts the `stonefish_simulator` node (from `stonefish_ros2`) with:
-- The scenario file `scenarios/sim_swarm.xml`
-- A render window of `800x600`
-- Render quality set to `low`
-- A target simulation rate of `50.0` Hz
-
-You should see a 3D window open showing a seafloor plane and two cylindrical AUVs, `scanner_1` and `scanner_2`, hovering near the origin.
-
-**Terminal 2 — UnetStack**
-
-> ⚠️ **Check your paths first**: the commands below assume UnetStack was extracted to `~/unetstack` and that this package was cloned to `~/stonefish_ws/src/sim_swarm`. If you put either of these somewhere else, update the paths accordingly before running.
-
-```bash
-cd ~/unetstack
-bin/unet ~/stonefish_ws/src/sim_swarm/config/sim_swarm.groovy
-```
-
-This starts the UnetStack node(s) defined in `sim_swarm.groovy` and prints the `tcp://` / `http://` addresses for each node's shell/console.
-
-**Terminal 3 — `unet_api` node**
+**Terminal 1 — Simulation + UnetStack**
 
 ```bash
 cd ~/stonefish_ws
 source install/setup.bash
-ros2 run sim_swarm unet_api
+ros2 launch ErebusSim ErebusSim.launch.py
 ```
 
-This node bridges ROS 2 and UnetStack using `unetpy`, so make sure UnetStack (Terminal 2) is already running before starting it.
+This starts:
+- The `stonefish_simulator` node (from `stonefish_ros2`) with the scenario file `scenarios/ErebusSim.xml`, a render window of `800x600`, render quality `low`, and a target simulation rate of `50.0` Hz
+- `rviz2` with the bundled `rviz/ErebusSim.rviz` config
+- The `vbs_pid_controller` node
+- UnetStack, launched via `bin/unet` from the directory pointed to by `UNET_HOME` (see [§1.3](#13-unetstack-community-edition)), running `config/ErebusSim.groovy`
+
+You should see a 3D window open showing a seafloor plane and two cylindrical AUVs, `scanner_1` and `scanner_2`, hovering near the origin, along with UnetStack's startup log printing the `tcp://` / `http://` addresses for each node's shell/console.
+
+**Terminal 2 — `unet_api` node**
+
+```bash
+cd ~/stonefish_ws
+source install/setup.bash
+ros2 run ErebusSim unet_api
+```
+
+This node bridges ROS 2 and UnetStack using `unetpy`. Since UnetStack is now brought up by the launch file in Terminal 1, just make sure that terminal has finished starting up before launching `unet_api` here.
 
 ---
 
@@ -175,7 +172,7 @@ This node bridges ROS 2 and UnetStack using `unetpy`, so make sure UnetStack (Te
 A dedicated keyboard teleop node lets you drive either AUV using a differential-thrust scheme:
 
 ```bash
-ros2 run sim_swarm auv_teleop
+ros2 run ErebusSim auv_teleop
 ```
 
 ### Controls
@@ -197,9 +194,9 @@ The node starts with `scanner_1` as the active vehicle. Pressing `TAB` toggles c
 ```
 stonefish_ws/
 └── src/
-    ├── sim_swarm/
+    ├── ErebusSim/
     │   ├── config/
-    │   │   └── sim_swarm.groovy
+    │   │   └── ErebusSim.groovy
     │   ├── data/
     │   │   └── meshes/
     │   │       ├── dummy_prop.obj
@@ -208,26 +205,28 @@ stonefish_ws/
     │   │       ├── full.mtl
     │   │       ├── full.obj
     │   │       ├── half.mtl
-    │   │       └── half.obj
+    │   │       ├── half.obj
+    │   │       ├── mine.mtl
+    │   │       └── mine.obj
+    │   ├── ErebusSim/
+    │   │   ├── auv_teleop.py
+    │   │   ├── __init__.py
+    │   │   ├── sonar_cropper.py
+    │   │   ├── unet_api.py
+    │   │   └── vbs_pid_controller.py
     │   ├── launch/
-    │   │   └── sim_swarm.launch.py
+    │   │   └── ErebusSim.launch.py
     │   ├── package.xml
     │   ├── README.md
     │   ├── resource/
-    │   │   └── sim_swarm
+    │   │   └── ErebusSim
     │   ├── rviz/
-    │   │   └── sim_swarm.rviz
+    │   │   └── ErebusSim.rviz
     │   ├── scenarios/
-    │   │   └── sim_swarm.xml
+    │   │   └── ErebusSim.xml
     │   ├── setup.cfg
-    │   ├── setup.py
-    │   ├── sim_swarm/
-    │   │   ├── auv_teleop.py
-    │   │   ├── __init__.py
-    │   │   └── unet_api.py
-    │   └── test/
-    │       ├── test_copyright.py
-    │       ├── test_flake8.py
-    │       └── test_pep257.py
+    │   └── setup.py
     └── stonefish_ros2/   (cloned from patrykcieslak/stonefish_ros2)
 ```
+
+> Note: `__pycache__/` directories (generated `.pyc` files under `ErebusSim/ErebusSim/`) are build artifacts and are intentionally excluded from this tree. Make sure they're listed in `.gitignore` so they don't get committed.
